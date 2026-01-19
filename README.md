@@ -1,6 +1,18 @@
 # Miraclib Trial Analysis
 
-This repository implements all four parts of Bob’s analysis using `cell-count.csv` + `example.db`:
+This repository implements all four parts of Bob’s analysis using `cell-count.csv` + `example.db`. The Python tools live in `scripts/` so the root stays focused on data and documentation:
+
+```
+scripts/
+  ├── dashboard.py
+  ├── data_overview.py
+  ├── plot_response.py
+  ├── sqlite.py
+  ├── stats.py
+  └── subset_analysis.py
+```
+
+Move on to each step below once you refresh the database.
 
 1. **Data Management** – schema design + loader.
 2. **Initial Analysis** – sample-level population frequencies.
@@ -13,34 +25,34 @@ An interactive Streamlit dashboard (`dashboard.py`) stitches the parts together 
 
 1. Build or prepare the SQLite DB:
    ```bash
-   python sqlite.py
+   python scripts/sqlite.py
    ```
-   That creates/refreshes `cell_counts` in `example.db` by reading every row from `cell-count.csv` using the schema defined in `sqlite.py`.
+   That creates/refreshes `cell_counts` in `example.db` by reading every row from `cell-count.csv` using the schema defined in `scripts/sqlite.py`.
 
 2. Inspect relative frequencies:
    ```bash
-   python data_overview.py > relative_frequencies.csv
+   python scripts/data_overview.py > relative_frequencies.csv
    ```
    The script emits one row per sample/population with `total_count`, `count`, and `percentage`.
 
 3. Statistical analysis:
-    ```bash
-    python stats.py
-    ```
-    Prints responder/non-responder means, differences, optional p-values (if `scipy` installed), and — when `matplotlib` is available — generates `response_boxplot.png`.
+   ```bash
+   python scripts/stats.py
+   ```
+   Prints responder/non-responder means, differences, optional p-values (if `scipy` installed) from a Welch’s two-sided t-test (which is appropriate because it compares two independent PBMC groups without assuming equal variances), and — when `matplotlib` is available — generates `response_boxplot.png`.
 
 4. Subset summary:
-    ```bash
-    python subset_analysis.py
-    ```
-    Lists baseline melanoma PBMC samples on miraclib plus counts per project, response, and sex.
+   ```bash
+   python scripts/subset_analysis.py
+   ```
+   Lists baseline melanoma PBMC samples on miraclib plus counts per project, response, and sex.
 
 ## Interactive dashboard
 
 Install dependencies (see below) and run:
 
 ```bash
-streamlit run dashboard.py
+streamlit run scripts/dashboard.py
 ```
 
 That page shows:
@@ -71,7 +83,7 @@ docker build -t docker.io/library/miraclib-analysis .
 Run analysis scripts inside the container:
 
 ```bash
-docker run --rm -v "$PWD":/app -w /app docker.io/library/miraclib-analysis python stats.py
+docker run --rm -v "$PWD":/app -w /app docker.io/library/miraclib-analysis python scripts/stats.py
 ```
 
 Other examples are in [DOCKER.md](DOCKER.md). Use the Streamlit command from that document to expose the dashboard.

@@ -13,13 +13,13 @@ docker build -t miraclib-analysis .
 You can run any script by mounting the workspace and specifying the script name. For example, to regenerate the diagnostics summary:
 
 ```bash
-docker run --rm -v "$PWD":/app -w /app miraclib-analysis python stats.py
+docker run --rm -v "$PWD":/app -w /app miraclib-analysis python scripts/stats.py
 ```
 
 To print the baseline melanoma subset:
 
 ```bash
-docker run --rm -v "$PWD":/app -w /app miraclib-analysis python subset_analysis.py
+docker run --rm -v "$PWD":/app -w /app miraclib-analysis python scripts/subset_analysis.py
 ```
 
 ## Run the dashboard
@@ -28,7 +28,7 @@ The Streamlit dashboard can be served from inside the container:
 
 ```bash
 docker run --rm -p 8501:8501 -v "$PWD":/app -w /app miraclib-analysis \
-    streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0
+    streamlit run scripts/dashboard.py --server.port 8501 --server.address 0.0.0.0
 ```
 
 Then open `http://localhost:8501` in the browser (or whichever host port you map).
